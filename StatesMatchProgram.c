@@ -162,11 +162,52 @@ void tipperControlA(int rightTip, int leftTip)
 }
 
 task autonomous()
+
 {
     if(Program == 1)
     {
+        driveControlA(127, 127);
+        wait1Msec(3000);
+        
+        mogoControlA(-127, -127);
+        wait1Msec(500);
+        
+        driveControlA(127, 127);
+        wait1Msec(500);
+        
+        mogoControlA(127, 127);
+        wait1Msec(500);
+        
+        driveControlA(-127, -127);
+        wait1Msec(1000);
+        
+        driveControlA(127, -127);
+        wait1Msec(500);
+        
+        driveControlA(127, 127);
+        wait1Msec(1000);
+        
+        mogoControlA(-127, -127);
+        wait1Msec(500);
+        
+        driveControlA(-127, -127);
+        wait1Msec(500)
+        
+        driveControlA(127, -127);
+        wait1Msec(500)
+        
+        driveControlA(-127, -127);
+        wait1Msec(500)
+        
+        tipperControlA(-127, -127);
+        wait1Msec(500)
+        
+        driveControlA(127, 127);
+        wait1Msec(1000)
+        
         //Placeholder for 10 point autonomous and tipper;
         //Disregard for now.
+        
     }
     else if(Program == 2)
     {
