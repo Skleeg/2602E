@@ -36,7 +36,7 @@
 /*  function is only called once after the cortex has been powered on and    */
 /*  not every time that the robot is disabled.                               */
 /*---------------------------------------------------------------------------*/
-
+int Program;
 void pre_auton()
 {
 	// Set bStopTasksBetweenModes to false if you want to keep user created tasks
@@ -44,13 +44,95 @@ void pre_auton()
 	// manage all user created tasks if set to false.
 	bStopTasksBetweenModes = true;
 
-	// Set bDisplayCompetitionStatusOnLcd to false if you don't want the LCD
-	// used by the competition include file, for example, you might want
-	// to display your team name on the LCD in this function.
-	// bDisplayCompetitionStatusOnLcd = false;
+	int lcdScreenMin = 1;
+	int lcdScreen = 1;
+	int lcdScreenMax = 3;
+	bLCDBacklight = true;
 
-	// All activities that occur before the competition starts
-	// Example: clearing encoders, setting servo positions, ...
+	const short leftButton = 1;
+	const short centerButton = 2;
+	const short rightButton = 4;
+
+	while(vrDisabled == true)
+	{
+		if (nLCDButtons == leftButton) //Slide to the left
+		{
+			if (lcdScreenMin == lcdScreen)
+			{
+				lcdScreen = lcdScreenMax;
+				wait1Msec(250);
+			}
+			else
+			{
+				lcdScreen --;
+				wait1Msec(250);
+			}
+		}
+		if (nLCDButtons == rightButton) //Slide to the right
+		{
+			if (lcdScreenMax == lcdScreen)
+			{
+				lcdScreen = lcdScreenMin;
+				wait1Msec(250);
+			}
+			else
+			{
+				lcdScreen++;
+				wait1Msec(250);
+			}
+		}
+		if (lcdScreen == 1 && Program != 1)
+		{
+			displayLCDCenteredString (0, "Program");
+			displayLCDCenteredString (1, "1");
+			if (nLCDButtons == centerButton)
+			{
+				Program = lcdScreen;
+				displayLCDCenteredString (0, "Ten Point + Tip");
+				displayLCDCenteredString (1, "Auto Selected");
+				wait1Msec(1500);
+			}
+		}
+		else if (lcdScreen == 1 && Program == 1)
+		{
+			displayLCDCenteredString (0, "Program");
+			displayLCDCenteredString (1, "[1]");
+		}
+		else if (lcdScreen == 2 && Program != 2)
+		{
+			displayLCDCenteredString (0, "Program");
+			displayLCDCenteredString (1, "2");
+			if (nLCDButtons == centerButton)
+			{
+				Program = lcdScreen;
+				displayLCDCenteredString (0, "Twenty Point");
+				displayLCDCenteredString (1, "Selected");
+				wait1Msec(1500);
+			}
+		}
+		else if (lcdScreen == 2 && Program == 2)
+		{
+			displayLCDCenteredString (0, "Program");
+			displayLCDCenteredString (1, "[2]");
+		}
+		else if (lcdScreen == 3 && Program != 3)
+		{
+			displayLCDCenteredString (0, "Program");
+			displayLCDCenteredString (1, "3");
+			if (nLCDButtons == centerButton)
+			{
+				Program = lcdScreen;
+				displayLCDCenteredString (0, "Stay Put");
+				displayLCDCenteredString (1, "Selected");
+				wait1Msec(1500);
+			}
+		}
+		else if (lcdScreen == 3 && Program == 3)
+		{
+			displayLCDCenteredString (0, "Program");
+			displayLCDCenteredString (1, "[3]");
+		}
+	}
 }
 
 /*---------------------------------------------------------------------------*/
