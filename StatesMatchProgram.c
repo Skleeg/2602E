@@ -163,10 +163,23 @@ void tipperControlA(int rightTip, int leftTip)
 
 task autonomous()
 {
-	driveControlA(0, 0);
-	mogoControlA(0, 0);
-	tipperControlA(0, 0);
-	wait1Msec(15000);
+    if(Program == 1)
+    {
+        //Placeholder for 10 point autonomous and tipper;
+        //Disregard for now.
+    }
+    else if(Program == 2)
+    {
+        //Placeholder for 20 point autonomous;
+        //Disregard for now.
+    }
+    else if(Program == 3)
+    {
+        driveControlA(0, 0);
+        mogoControlA(0, 0);
+        tipperControlA(0, 0);
+        wait1Msec(15000);
+    }
 }
 
 /*---------------------------------------------------------------------------*/
