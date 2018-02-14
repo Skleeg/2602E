@@ -14,7 +14,22 @@
 
 task main()
 {
+	bLCDBacklight = true;
+	string mainBattery, backupBattery;
+
 	while(1==1)
+	{
+		clearLCDLine(0);
+		clearLCDLine(1);
+		//Primary battery voltage display
+		displayLCDString(0, 0, "Primary: ");
+		sprintf(mainBattery, "%1.2f%c", nImmediateBatteryLevel/1000.0,'V');
+		displayNextLCDString(mainBattery);
+		//Backup battery voltage display
+		displayLCDString(1, 0, "Backup: ");
+		sprintf(backupBattery, "%1.2f%c", BackupBatteryLevel/1000.0, 'V');
+		displayNextLCDString(backupBattery);
+	}
 	{
 		motor[leftSideDrive] = vexRT[Ch3];
 		motor[rightSideDrive] = vexRT[Ch2];
@@ -34,15 +49,15 @@ task main()
 			motor[rightMobileGoal] = 0;
 			motor[leftMobileGoal] = 0;
 		}
-		if(vexRT[Btn5D] == 1)
+		if(vexRT[Btn5U] == 1)
 		{
-			motor[rightTipper] = -127;
-			motor[leftTipper] = -127;
+			motor[rightTipper] = -63;
+			motor[leftTipper] = -63;
 		}
-		else if(vexRT[Btn5U] == 1)
+		else if(vexRT[Btn5D] == 1)
 		{
-			motor[rightTipper] = 127;
-			motor[leftTipper] = 127;
+			motor[rightTipper] = 63;
+			motor[leftTipper] = 63;
 		}
 		else
 		{

@@ -53,7 +53,7 @@ void pre_auton()
 	const short centerButton = 2;
 	const short rightButton = 4;
 
-	while(vrDisabled == true)
+	while(bIfiRobotDisabled == 1) //vrDisabled means that the vexNet key is not plugged in. Change later if this doesn't work.
 	{
 		if (nLCDButtons == leftButton) //Slide to the left
 		{
@@ -132,23 +132,23 @@ void pre_auton()
 			displayLCDCenteredString (0, "Program");
 			displayLCDCenteredString (1, "[3]");
 		}
-        else if (lcdScreen == 4 && Program != 4)
-        {
-            displayLCDCenteredString (0, "Program");
-            displayLCDCenteredString (1, "4");
-            if (nLCDButtons == centerButton)
-            {
-                Program = lcdScreen;
-                displayLCDCenteredString (0, "tf do i put here");
-                displayLCDCenteredString (1, "bottom text");
-                wait1Msec(1500);
-            }
-        }
-        else if (lcdScreen == 4 && Program == 4)
-        {
-            displayLCDCenteredString (0, "Program");
-            displayLCDCenteredString (1, "[4]")
-        }
+		else if (lcdScreen == 4 && Program != 4)
+		{
+			displayLCDCenteredString (0, "Program");
+			displayLCDCenteredString (1, "4");
+			if (nLCDButtons == centerButton)
+			{
+				Program = lcdScreen;
+				displayLCDCenteredString (0, "tf do i put here");
+				displayLCDCenteredString (1, "bottom text");
+				wait1Msec(1500);
+			}
+		}
+		else if (lcdScreen == 4 && Program == 4)
+		{
+			displayLCDCenteredString (0, "Program");
+			displayLCDCenteredString (1, "[4]");
+		}
 	}
 }
 
@@ -181,98 +181,98 @@ void tipperControlA(int rightTip, int leftTip)
 task autonomous()
 
 {
-    if(Program == 1)
-    {
-        driveControlA(127, 127);
-        wait1Msec(3000);
-        
-        mogoControlA(-127, -127);
-        wait1Msec(500);
-        
-        driveControlA(127, 127);
-        wait1Msec(500);
-        
-        mogoControlA(127, 127);
-        wait1Msec(500);
-        
-        driveControlA(-127, -127);
-        wait1Msec(1000);
-        
-        driveControlA(127, -127);
-        wait1Msec(500);
-        
-        driveControlA(127, 127);
-        wait1Msec(1000);
-        
-        mogoControlA(-127, -127);
-        wait1Msec(500);
-        
-        driveControlA(-127, -127);
-        wait1Msec(500);
-        
-        driveControlA(127, -127);
-        wait1Msec(500);
-        
-        driveControlA(-127, -127);
-        wait1Msec(500);
-        
-        tipperControlA(-127, -127);
-        wait1Msec(500);
-        
-        driveControlA(127, 127);
-        wait1Msec(1000);
-        
-        //Placeholder for 10 point autonomous and tipper;
-        //Disregard for now.
-        
-    }
-    else if(Program == 2)
-    {
-        //Will Cam's old 20pt work?
-        
-        /*
-         
-        driveControlA(127, 127);
-        wait1Msec(3000);
-        
-        mogoControlA(-127, -127);
-        wait1Msec(500);
-        
-        driveControlA(127, 127);
-        wait1Msec(500);
-        
-        mogoControlA(127, 127);
-        wait1Msec(500);
-        
-        driveControlA(-127, -127);
-        wait1Msec(1000);
-        
-        driveControlA(127, -127);
-        wait1Msec(500);
-        
-        driveControlA(127, 127);
-        wait1Msec(1000);
-        
-        driveControlA(127, 127);
-        wait1Msec(1000);
-        
-        */
-        
-        //Placeholder for 20 point autonomous;
-        //Disregard for now.
-    }
-    else if(Program == 3)
-    {
-        driveControlA(0, 0);
-        mogoControlA(0, 0);
-        tipperControlA(0, 0);
-        wait1Msec(15000);
-        /*
-        hey guys minecraftman4876 coming atcha with a new video.
-        today were gonna try and upgrade our iron tools to diamond,
-        and hopefully get some obsidian so we can make our way to the nether.
-        */
-    }
+	if(Program == 1)
+	{
+		driveControlA(127, 127);
+		wait1Msec(3000);
+
+		mogoControlA(-127, -127);
+		wait1Msec(500);
+
+		driveControlA(127, 127);
+		wait1Msec(500);
+
+		mogoControlA(127, 127);
+		wait1Msec(500);
+
+		driveControlA(-127, -127);
+		wait1Msec(1000);
+
+		driveControlA(127, -127);
+		wait1Msec(500);
+
+		driveControlA(127, 127);
+		wait1Msec(1000);
+
+		mogoControlA(-127, -127);
+		wait1Msec(500);
+
+		driveControlA(-127, -127);
+		wait1Msec(500);
+
+		driveControlA(127, -127);
+		wait1Msec(500);
+
+		driveControlA(-127, -127);
+		wait1Msec(500);
+
+		tipperControlA(-127, -127);
+		wait1Msec(500);
+
+		driveControlA(127, 127);
+		wait1Msec(1000);
+
+		//Placeholder for 10 point autonomous and tipper;
+		//Disregard for now.
+
+	}
+	else if(Program == 2)
+	{
+		//Will Cam's old 20pt work?
+
+		/*
+
+		driveControlA(127, 127);
+		wait1Msec(3000);
+
+		mogoControlA(-127, -127);
+		wait1Msec(500);
+
+		driveControlA(127, 127);
+		wait1Msec(500);
+
+		mogoControlA(127, 127);
+		wait1Msec(500);
+
+		driveControlA(-127, -127);
+		wait1Msec(1000);
+
+		driveControlA(127, -127);
+		wait1Msec(500);
+
+		driveControlA(127, 127);
+		wait1Msec(1000);
+
+		driveControlA(127, 127);
+		wait1Msec(1000);
+
+		*/
+
+		//Placeholder for 20 point autonomous;
+		//Disregard for now.
+	}
+	else if(Program == 3)
+	{
+		driveControlA(0, 0);
+		mogoControlA(0, 0);
+		tipperControlA(0, 0);
+		wait1Msec(15000);
+		/*
+		hey guys minecraftman4876 coming atcha with a new video.
+		today were gonna try and upgrade our iron tools to diamond,
+		and hopefully get some obsidian so we can make our way to the nether.
+		*/
+	}
 }
 
 /*---------------------------------------------------------------------------*/
@@ -296,36 +296,36 @@ void tipperControlR(int rightTip, int leftTip)
 	//nice
 }
 
-	task usercontrol()
+task usercontrol()
+{
+	while(1==1)
 	{
-		while(1==1)
-		{
-			motor[leftSideDrive] = vexRT[Ch3];
-			motor[rightSideDrive] = vexRT[Ch2];
+		motor[leftSideDrive] = vexRT[Ch3];
+		motor[rightSideDrive] = vexRT[Ch2];
 
-			if(vexRT[Btn6U] == 1)
-			{
-				mogoControlR(-127, -127);
-			}
-			else if(vexRT[Btn6D] == 1)
-			{
-				mogoControlR(127, 127);
-			}
-			else
-			{
-				mogoControlR(0, 0);
-			}
-			if(vexRT[Btn5D] == 1)
-			{
-				tipperControlR(-127, -127);
-			}
-			else if(vexRT[Btn5U] == 1)
-			{
-				tipperControlR(127, 127);
-			}
-			else
-			{
-				tipperControlR(0, 0);
-			}
+		if(vexRT[Btn6U] == 1)
+		{
+			mogoControlR(-127, -127);
+		}
+		else if(vexRT[Btn6D] == 1)
+		{
+			mogoControlR(127, 127);
+		}
+		else
+		{
+			mogoControlR(0, 0);
+		}
+		if(vexRT[Btn5D] == 1)
+		{
+			tipperControlR(-127, -127);
+		}
+		else if(vexRT[Btn5U] == 1)
+		{
+			tipperControlR(127, 127);
+		}
+		else
+		{
+			tipperControlR(0, 0);
 		}
 	}
+}
