@@ -139,17 +139,15 @@ void pre_auton()
             if (nLCDButtons == centerButton)
             {
                 Program = lcdScreen;
-                displayLCDCenteredString (0, "Placeholder");
-                displayLCDCenteredString (1, "Placeholder");
+                displayLCDCenteredString (0, "tf do i put here");
+                displayLCDCenteredString (1, "bottom text");
                 wait1Msec(1500);
             }
-            {
-                else if (lcdScreen == 4 && Program == 4)
-                {
-                    displayLCDCenteredString (0, "Program");
-                    displayLCDCenteredString (1, "[4]")
-                }
-            }
+        }
+        else if (lcdScreen == 4 && Program == 4)
+        {
+            displayLCDCenteredString (0, "Program");
+            displayLCDCenteredString (1, "[4]")
         }
 	}
 }
@@ -269,6 +267,11 @@ task autonomous()
         mogoControlA(0, 0);
         tipperControlA(0, 0);
         wait1Msec(15000);
+        /*
+        hey guys minecraftman4876 coming atcha with a new video.
+        today were gonna try and upgrade our iron tools to diamond,
+        and hopefully get some obsidian so we can make our way to the nether.
+        */
     }
 }
 
