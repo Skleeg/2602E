@@ -132,6 +132,25 @@ void pre_auton()
 			displayLCDCenteredString (0, "Program");
 			displayLCDCenteredString (1, "[3]");
 		}
+        else if (lcdScreen == 4 && Program != 4)
+        {
+            displayLCDCenteredString (0, "Program");
+            displayLCDCenteredString (1, "4");
+            if (nLCDButtons == centerButton)
+            {
+                Program = lcdScreen;
+                displayLCDCenteredString (0, "Placeholder");
+                displayLCDCenteredString (1, "Placeholder");
+                wait1Msec(1500);
+            }
+            {
+                else if (lcdScreen == 4 && Program == 4)
+                {
+                    displayLCDCenteredString (0, "Program");
+                    displayLCDCenteredString (1, "[4]")
+                }
+            }
+        }
 	}
 }
 
@@ -191,19 +210,19 @@ task autonomous()
         wait1Msec(500);
         
         driveControlA(-127, -127);
-        wait1Msec(500)
+        wait1Msec(500);
         
         driveControlA(127, -127);
-        wait1Msec(500)
+        wait1Msec(500);
         
         driveControlA(-127, -127);
-        wait1Msec(500)
+        wait1Msec(500);
         
         tipperControlA(-127, -127);
-        wait1Msec(500)
+        wait1Msec(500);
         
         driveControlA(127, 127);
-        wait1Msec(1000)
+        wait1Msec(1000);
         
         //Placeholder for 10 point autonomous and tipper;
         //Disregard for now.
@@ -211,6 +230,36 @@ task autonomous()
     }
     else if(Program == 2)
     {
+        //Will Cam's old 20pt work?
+        
+        /*
+         
+        driveControlA(127, 127);
+        wait1Msec(3000);
+        
+        mogoControlA(-127, -127);
+        wait1Msec(500);
+        
+        driveControlA(127, 127);
+        wait1Msec(500);
+        
+        mogoControlA(127, 127);
+        wait1Msec(500);
+        
+        driveControlA(-127, -127);
+        wait1Msec(1000);
+        
+        driveControlA(127, -127);
+        wait1Msec(500);
+        
+        driveControlA(127, 127);
+        wait1Msec(1000);
+        
+        driveControlA(127, 127);
+        wait1Msec(1000);
+        
+        */
+        
         //Placeholder for 20 point autonomous;
         //Disregard for now.
     }
