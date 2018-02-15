@@ -34,18 +34,18 @@ LcdSetAutonomous( int value )
 {
 	if( value == 0 )
 	{
-		displayLCDString(0, 0, "auton 0");
+		displayLCDString(0, 0, "Ten Point + Tip");
 		displayLCDString(1, 0, "[00]   01    02 ");
 	}
 	if( value == 1 )
 	{
-		displayLCDString(0, 0, "auton 1");
+		displayLCDString(0, 0, "Twenty Point");
 		displayLCDString(1, 0, " 00   [01]   02 ");
 	}
 	if( value == 2 )
 	{
-		displayLCDString(0, 0, "auton 2");
-		displayLCDString(1, 0, " 00   [01]   02 ");
+		displayLCDString(0, 0, "Stay Still");
+		displayLCDString(1, 0, " 00    01   [02]");
 	}
 
 	MyAutonomous = value;
@@ -173,6 +173,10 @@ task autonomous()
 		break;
 
 	default:
+		driveControlA(0, 0);
+		mogoControlA(0, 0);
+		tipperControlA(0, 0);
+		wait1Msec(15000);
 		break;
 	}
 }
