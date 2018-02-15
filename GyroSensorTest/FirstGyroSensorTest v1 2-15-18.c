@@ -38,24 +38,24 @@ task main()
  wait1Msec(2000);
 
 //Adjust SensorScale to correct the scaling for your gyro
-SensorScale[in4] = 260;
+SensorScale[in4] = 51.93;
  //Adjust SensorFullCount to set the "rollover" point. 3600 sets the rollover point to +/-3600
-SensorFullCount[in8] = 3600;
+SensorFullCount[in4] = 3600;
 
 //Specify the number of degrees for the robot to turn (1 degree = 10, or 900 = 90 degrees)
- int degrees10 = 20;
+ int degrees10 = 2000;
 
 //While the absolute value of the gyro is less than the desired rotation...
- while(abs(SensorValue[in8]) < degrees10)
+ while(abs(SensorValue[in4]) < degrees10)
  {
  //...continue turning
- motor[rightSideDrive] = 25;
- motor[leftSideDrive] = -25;
+ motor[rightSideDrive] = 100;
+ motor[leftSideDrive] = -100;
  }
 
 //Brief brake to stop some drift
- motor[rightSideDrive] = -5;
- motor[leftSideDrive] = 5;
+ motor[rightSideDrive] = -50;
+ motor[leftSideDrive] = 50;
  wait1Msec(250);
 
 
