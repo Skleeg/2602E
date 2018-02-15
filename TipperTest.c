@@ -29,8 +29,7 @@ task main()
 		displayLCDString(1, 0, "Backup: ");
 		sprintf(backupBattery, "%1.2f%c", BackupBatteryLevel/1000.0, 'V');
 		displayNextLCDString(backupBattery);
-	}
-	{
+
 		motor[leftSideDrive] = vexRT[Ch3];
 		motor[rightSideDrive] = vexRT[Ch2];
 
