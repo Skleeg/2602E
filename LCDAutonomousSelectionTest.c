@@ -105,6 +105,22 @@ void pre_auton()
 /*                                                                           */
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
+void driveControlA(int rightDrive, int leftDrive)
+{
+	motor[leftSideDrive] = leftDrive;
+	motor[rightSideDrive] = rightDrive;
+}
+void mogoControlA(int rightMogo, int leftMogo)
+{
+	motor[leftMobileGoal] = leftMogo;
+	motor[rightMobileGoal] = rightMogo;
+}
+void tipperControlA(int rightTip, int leftTip)
+{
+	motor[leftTipper] = leftTip;
+	motor[rightTipper] = rightTip;
+	//nice
+}
 
 task autonomous()
 {
@@ -112,6 +128,44 @@ task autonomous()
 	{
 	case 0:
 		//auton code 1 here
+		driveControlA(127, 127);
+		wait1Msec(3000);
+
+		mogoControlA(-127, -127);
+		wait1Msec(500);
+
+		driveControlA(127, 127);
+		wait1Msec(500);
+
+		mogoControlA(127, 127);
+		wait1Msec(500);
+
+		driveControlA(-127, -127);
+		wait1Msec(1000);
+
+		driveControlA(127, -127);
+		wait1Msec(500);
+
+		driveControlA(127, 127);
+		wait1Msec(1000);
+
+		mogoControlA(-127, -127);
+		wait1Msec(500);
+
+		driveControlA(-127, -127);
+		wait1Msec(500);
+
+		driveControlA(127, -127);
+		wait1Msec(500);
+
+		driveControlA(-127, -127);
+		wait1Msec(500);
+
+		tipperControlA(-127, -127);
+		wait1Msec(500);
+
+		driveControlA(127, 127);
+		wait1Msec(1000);
 		break;
 
 	case 1:
