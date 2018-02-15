@@ -43,7 +43,7 @@ SensorScale[in4] = 51.93;
 SensorFullCount[in4] = 3600;
 
 //Specify the number of degrees for the robot to turn (1 degree = 10, or 900 = 90 degrees)
- int degrees10 = 2000;
+ int degrees10 = 1800;
 
 //While the absolute value of the gyro is less than the desired rotation...
  while(abs(SensorValue[in4]) < degrees10)
