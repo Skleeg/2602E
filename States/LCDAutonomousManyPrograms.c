@@ -132,25 +132,24 @@ void pre_auton()
 /*                                                                           */
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
-void baseControlA(int leftDrive, int rightDrive)
+void baseControl(int leftDrive, int rightDrive)
 {
 	motor[leftSideDrive] = leftDrive;
 	motor[rightSideDrive] = rightDrive;
 }
-void mogoControlA(int leftMogo, int RightMogo)
+void mogoControl(int leftMogo, int rightMogo)
 {
 	motor[leftMobileGoal] = leftMogo;
 	motor[rightMobileGoal] = rightMogo;
 }
-void tipperControlA(int rightTip, int leftTip)
+void tipperControl(int rightTip, int leftTip)
 {
 	motor[leftTipper] = leftTip;
 	motor[rightTipper] = rightTip;
 	//nice
 }
 
-task autonomous()
-{
+
 	task Straighten()
 {
 
@@ -187,6 +186,7 @@ SensorValue(LeftEncoder) = 0;
 		}
 	}
 }
+
 
 task BackStraighten()
 {
@@ -259,48 +259,56 @@ SensorValue(LeftEncoder) = 0;
 		}
 	}
 }
-
+task autonomous()
+{
 	switch( MyAutonomous )
 	{
 	case 0:
 		//Ten Point + Tip
-		driveControlA(127, 127);
+
+		startTask(Straighten);
+		baseControl(127, 127);
 		wait1Msec(3000);
+		stopTask(Straighten);
 
-		mogoControlA(-127, -127);
+		mogoControl(-127, -127);
 		wait1Msec(500);
 
-		driveControlA(127, 127);
+		startTask(Straighten);
+		baseControl(127, 127);
+		wait1Msec(500);
+		stopTask(Straighten);
+
+		mogoControl(127, 127);
 		wait1Msec(500);
 
-		mogoControlA(127, 127);
+		startTask(BackStraightenFast);
+		baseControl(-127, -127);
+		wait1Msec(1000);
+		stopTask(BackStraightenFast);
+
+		baseControl(127, -127);
 		wait1Msec(500);
 
-		driveControlA(-127, -127);
+		baseControl(127, 127);
 		wait1Msec(1000);
 
-		driveControlA(127, -127);
+		mogoControl(-127, -127);
 		wait1Msec(500);
 
-		driveControlA(127, 127);
-		wait1Msec(1000);
-
-		mogoControlA(-127, -127);
+		baseControl(-127, -127);
 		wait1Msec(500);
 
-		driveControlA(-127, -127);
+		baseControl(127, -127);
 		wait1Msec(500);
 
-		driveControlA(127, -127);
+		baseControl(-127, -127);
 		wait1Msec(500);
 
-		driveControlA(-127, -127);
+		tipperControl(-127, -127);
 		wait1Msec(500);
 
-		tipperControlA(-127, -127);
-		wait1Msec(500);
-
-		driveControlA(127, 127);
+		baseControl(127, 127);
 		wait1Msec(1000);
 		break;
 
@@ -310,9 +318,9 @@ SensorValue(LeftEncoder) = 0;
 
 	case 2:
 		//Stay Still, Zero Points
-		driveControlA(0, 0);
-		mogoControlA(0, 0);
-		tipperControlA(0, 0);
+		baseControl(0, 0);
+		mogoControl(0, 0);
+		tipperControl(0, 0);
 		wait1Msec(15000);
 		break;
 
@@ -339,11 +347,11 @@ SensorValue(LeftEncoder) = 0;
 
 		case 4:
 		//Defensive, straight backwards
-		driveControlA(-127, -127);
+		baseControl(-127, -127);
 		wait1Msec(3000);
-		driveControlA(0, 0);
-		mogoControlA(0, 0);
-		tipperControlA(0, 0);
+		baseControl(0, 0);
+		mogoControl(0, 0);
+		tipperControl(0, 0);
 		break;
 
 	default:
