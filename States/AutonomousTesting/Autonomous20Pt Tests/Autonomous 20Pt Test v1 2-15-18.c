@@ -37,7 +37,7 @@ int rightStart;
 
 
 leftStart = 78;
-rightStart = 100;
+rightStart = 83;
 
 
 SensorValue(RightEncoder) = 0;
