@@ -293,26 +293,34 @@ task autonomous()
 		baseControl(127, -127);
 		wait1Msec(500);
 
+		startTask(Straighten);
 		baseControl(127, 127);
 		wait1Msec(1000);
+		stopTask(Straighten);
 
 		mogoControl(-127, -127);
 		wait1Msec(500);
 
+		startTask(BackStraightenFast);
 		baseControl(-127, -127);
 		wait1Msec(500);
+		stopTask(BackStraightenFast);
 
 		baseControl(127, -127);
 		wait1Msec(500);
 
+		startTask(BackStraightenFast);
 		baseControl(-127, -127);
 		wait1Msec(500);
+		stopTask(BackStraightenFast);
 
 		tipperControl(-127, -127);
 		wait1Msec(500);
 
+		startTask(Straighten);
 		baseControl(127, 127);
 		wait1Msec(1000);
+		stopTask(Straighten);
 		break;
 
 	case 1:
@@ -350,11 +358,10 @@ task autonomous()
 
 		case 4:
 		//Defensive, straight backwards
+		startTask(BackStraightenFast);
 		baseControl(-127, -127);
 		wait1Msec(3000);
-		baseControl(0, 0);
-		mogoControl(0, 0);
-		tipperControl(0, 0);
+		stopTask(BackStraightenFast);
 		break;
 
 	default:
