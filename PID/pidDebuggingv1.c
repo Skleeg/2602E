@@ -17,6 +17,8 @@
 #pragma DebuggerWindows("Globals")
 #pragma DebuggerWindows("Motors")
 
+
+
 void baseControl (int speed)
 {
 		motor[leftSideDrive] = speed;
@@ -30,12 +32,13 @@ void baseControl (int speed)
 
 //ticks/inch = 627.2 * 2 /4*pi= 99.82198
 
+
 int inchToTicks (float inch)
 {
 		int ticks;
 		ticks = inch*99.82198;
 		return ticks;
-}
+ }
 
 int fixTimerValue (float rawSeconds)
 {
@@ -49,9 +52,9 @@ int fixTimerValue (float rawSeconds)
 }
 void PIDBaseControl (float target, float waitTime, float maxPower = 1)
 {
-		float Kp = 0.2;
-		float Ki = 0.05;
-		float Kd = 0.5;
+		float Kp = 0.26;
+		float Ki = 0;
+		float Kd = 0.05;
 
 		int error;
 
@@ -62,7 +65,7 @@ void PIDBaseControl (float target, float waitTime, float maxPower = 1)
 		int derivitave;
 
 		float integralActiveZone = inchToTicks(3);
-		float integralPowerLimit = 50/Ki;
+
 
 		int finalPower;
 
@@ -87,15 +90,6 @@ void PIDBaseControl (float target, float waitTime, float maxPower = 1)
 			else
 			{
 				integralRaw = 0;
-			}
-
-			if (integralRaw > integralPowerLimit)
-			{
-				integralRaw = integralPowerLimit;
-			}
-			if (integralRaw < - integralPowerLimit)
-			{
-				integralRaw = -integralPowerLimit;
 			}
 
 			integral = Ki*integralRaw;
@@ -136,13 +130,24 @@ void PIDBaseControl (float target, float waitTime, float maxPower = 1)
 	baseControl(0);
 }
 
+
+
 task main()
 {
-	PIDBaseControl(12, 0.1, 0.7); //move forward 12 inches with 1 sec delay 70% power;
-	PIDBaseControl(-7.5, 1 0.9); //back off 7.5 inches with 1 sec delay;
+	SensorValue(RightEncoder) = 0;
+	SensorValue(LeftEncoder) = 0;
 
-	while(true)
+	PIDBaseControl(1, 0, 1); //move forward 12 inches with 1 sec delay 70% power;
+
+
+	while(1 == 1)
 			{
-			wait1Msec(20);
+				if(SensorValue[RightEncoder] >= 360)
+{
+	motor[leftSideDrive] = 0;
+	motor[rightSideDrive] = 0;
+
+}
+
 			}
 }
