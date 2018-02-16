@@ -32,7 +32,7 @@ static int MyAutonomous = 0;
 
 //Autonomous Selection
 
-#define MAX_CHOICE 4
+#define MAX_CHOICE 5
 
 void
 LcdAutonomousSet( int value, bool select = false )
@@ -49,7 +49,7 @@ LcdAutonomousSet( int value, bool select = false )
 	if( MyAutonomous == value )
 		displayLCDString(1, 5, "ACTIVE");
 	else
-		displayLCDString(1, 5, "Select...");
+		displayLCDString(1, 5, "Select");
 
 	switch(value)
 	{
@@ -68,6 +68,8 @@ LcdAutonomousSet( int value, bool select = false )
 	case 4:
 		displayLCDString(0, 0, "Defensive");
 		break;
+	case 5:
+		displayLCDString(0, 0, "RCon (no comp)");
 	default:
 		displayLCDString(0, 0, "Unknown");
 		break;
@@ -364,6 +366,39 @@ task autonomous()
 		stopTask(BackStraightenFast);
 		break;
 
+		case 5:
+		//Drive testing, just in case
+		while (true)
+		{
+			{
+				motor[leftSideDrive] = vexRT[Ch3];
+				motor[rightSideDrive] = vexRT[Ch2];
+
+				if(vexRT[Btn6U] == 1)
+				{
+					mogoControl(-127, -127);
+				}
+				else if(vexRT[Btn6D] == 1)
+				{
+					mogoControl(127, 127);
+				}
+				else
+				{
+					mogoControl(0, 0);
+				}
+				if(vexRT[Btn5D] == 1)
+				{
+					tipperControl(-127, -127);
+				}
+				else if(vexRT[Btn5U] == 1)
+				{
+					tipperControl(127, 127);
+				}
+				else
+				{
+					tipperControlR(0, 0);
+				}
+			}
 	default:
 		break;
 	}
