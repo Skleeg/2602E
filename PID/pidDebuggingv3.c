@@ -85,7 +85,7 @@ void PIDBaseControl (float target, float waitTime, float maxPower = 1)
 
 		while(time1[T1] < fixTimerValue(waitTime))
 		{
-			error = inchToTicks(target) - (2*LeftSensor);
+			error = inchToTicks(target/2) - (2*(SensorValue(LeftEncoder));
 
 			proportion = Kp*error;
 
@@ -143,12 +143,6 @@ task main()
 	SensorValue(RightEncoder) = 0;
 	SensorValue(LeftEncoder) = 0;
 
-	PIDBaseControl(1, 1, 0.5); //move forward 1 inches with 1 sec delay 50% power;
-
-	motor[leftSideDrive] = 0;
-	motor[rightSideDrive] = 0;
-	wait1Msec(100);
-
-
+	PIDBaseControl(12, 0, 0.5); //move forward 1 inches with 1 sec delay 50% power;
 
 }
