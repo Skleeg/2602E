@@ -1,6 +1,7 @@
 #pragma config(Sensor, in1,    LeftPotentiometer, sensorPotentiometer)
 #pragma config(Sensor, in3,    RightPotentiometer, sensorPotentiometer)
 #pragma config(Sensor, in4,    gyroSensor,     sensorGyro)
+#pragma config(Sensor, dgtl1,  touchSensor,     sensorTouch)
 #pragma config(Sensor, dgtl3,  RightEncoder,   sensorQuadEncoder)
 #pragma config(Sensor, dgtl7,  LeftEncoder,    sensorQuadEncoder)
 #pragma config(Motor,  port2,           rightSideDrive, tmotorVex393_MC29, openLoop, reversed)
