@@ -320,31 +320,24 @@ task main()
 
 		if(vexRT(Btn8R) == 1)
 		{
+		  liftControl(40, 40, 1250);
+		  liftControl(0, 0, 750);
+		  liftControl(-35, -35, 1100);
+			//bring lift down
 
-			liftControl(63, 63, 100);
-			untilPotentiometerLessThan(1900, in1);
-			liftControl(-63, -63, 100);
-			untilPotentiometerGreaterThan(2000, in1);
-			//align mobile goal
-
-			liftControl(63, 63, 400);
-			untilPotentiometerGreaterThan(750, in3);
-			//bring mobile goal down
-
-			liftControl(0, 0, 100);
+		  liftControl(0, 0, 500);
 
 			startTask(Straighten);
-			BaseControlPID(40, 0, 1);
+			BaseControlPID(35, 0, 1);
 			stopTask(Straighten);
 
 			baseControl(0, 0, 100);
 			//stop
 
-			liftControl(-63, -63, 400);
+			liftControl(-63, -63, 900);
 			//bring mobile goal up
 
-
-
+			liftControl(0, 0, 100);
 
 		}
 	}

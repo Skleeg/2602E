@@ -42,7 +42,7 @@ void LiftControlPID (float target, float waitTime, float maxPower=1)
 {
 	float Kp = 0.3;
 	float Ki = 0;
-	float Kd = 1.1;
+	float Kd = 1.2;
 
 
 	int error;
@@ -64,7 +64,7 @@ void LiftControlPID (float target, float waitTime, float maxPower=1)
 
 	while(time1[T1] < fixTimerValue(waitTime))
 	{
-		error = (target/2) - (2*(SensorValue(RightPotentiometer));
+		error = (target/2) - (2*(SensorValue(RightPotentiometer)));
 
 		proportion = Kp*error;
 		integral = Ki*integralRaw;
@@ -88,7 +88,7 @@ void LiftControlPID (float target, float waitTime, float maxPower=1)
 			finalPower= -maxPower*127;
 		}
 
-		PIDLiftControl((finalPower)*-1);
+		PIDliftControl((finalPower)*-1);
 
 		wait1Msec(40);
 
@@ -107,9 +107,9 @@ void LiftControlPID (float target, float waitTime, float maxPower=1)
 
 task main()
 {
-	rawliftControl(63, 63); untilPotentiometerGreaterThan(542, in3)
+	rawliftControl(63, 63); untilPotentiometerGreaterThan(1200, in3);
 	rawliftControl(0, 0,);
 	wait1Msec(1000);
-	LiftControlPID(1000, 0, 0.27);
+	LiftControlPID(1200, 0, 0.5);
 
 }
