@@ -32,7 +32,7 @@ static int MyAutonomous = 0;
 
 //Autonomous Selection
 
-#define MAX_CHOICE 5
+#define MAX_CHOICE 6
 
 void
 LcdAutonomousSet( int value, bool select = false )
@@ -69,6 +69,9 @@ LcdAutonomousSet( int value, bool select = false )
 		displayLCDString(0, 0, "Defensive");
 		break;
 	case 5:
+		displayLCDString(0, 0, "Double tip");
+		break;
+	case 6:
 		displayLCDString(0, 0, "RCon (no comp)");
 	default:
 		displayLCDString(0, 0, "Unknown");
@@ -367,6 +370,40 @@ task autonomous()
 		break;
 
 		case 5:
+		//Double tip that sh*t
+		startTask(Straighten);
+		baseControl(127, 127);
+		wait1Msec(3000);
+		stopTask(Straighten);
+
+		tipperControl(127, 127);
+		wait1Msec(1000);
+
+		startTask(BackStraightenFast);
+		baseControl(-127, -127)
+		wait1Msec(1000);
+		stopTask(BackStraightenFast);
+
+		tipperControl(-127, -127);
+		wait1Msec(1000);
+
+		baseControl(127, -127);
+		wait1Msec(1000);
+
+		startTask(Straighten);
+		baseControl(127, 127);
+		wait1Msec(1000);
+		stopTask(Straighten);
+
+		tipperControl(127, 127);
+		wait1Msec(1000);
+
+		startTask(BackStraightenFast);
+		baseControl(-127, -127);
+		wait1Msec(1000);
+		stopTask(BackStraightenFast);
+
+		case 6:
 		//Drive testing, just in case
 		while (true)
 		{
@@ -399,6 +436,7 @@ task autonomous()
 					tipperControlR(0, 0);
 				}
 			}
+			break;
 	default:
 		break;
 	}
