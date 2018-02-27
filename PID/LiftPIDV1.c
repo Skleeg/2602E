@@ -14,11 +14,10 @@
 #pragma config(Motor,  port9,           leftMobileGoal, tmotorVex393_MC29, openLoop)
 
 
-void rawliftControl (int leftLift, int rightLift, int liftTime)
+void rawliftControl (int leftLift, int rightLift)
 {
 	motor[leftMobileGoal] = leftLift;
 	motor[rightMobileGoal] = rightLift;
-	liftTime = wait1Msec(liftTime);
 }
 
 void PIDliftControl (int LiftSpeed)
@@ -108,8 +107,9 @@ void LiftControlPID (float target, float waitTime, float maxPower=1)
 
 task main()
 {
-	rawliftControl(63, 63, 100); untilPotentiometerGreaterThan(542, in3)
-	rawliftControl(0, 0, 1000);
+	rawliftControl(63, 63); untilPotentiometerGreaterThan(542, in3)
+	rawliftControl(0, 0,);
+	wait1Msec(1000);
 	LiftControlPID(1000, 0, 0.27);
 
 }
