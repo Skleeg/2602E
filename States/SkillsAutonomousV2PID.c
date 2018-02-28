@@ -204,8 +204,11 @@ void BaseControlPID (float target, float waitTime, float maxPower = 1)
 
 	task PivotLeft90()
 {
+
+stopTask(GyroReset);
+
 //Adjust SensorScale to correct the scaling for your gyro
-SensorScale[in4] = 103.86;
+SensorScale[in4] = 51.93;
  //Adjust SensorFullCount to set the "rollover" point. 3600 sets the rollover point to +/-3600
 SensorFullCount[in4] = 3600;
 
@@ -224,6 +227,8 @@ SensorFullCount[in4] = 3600;
  motor[rightSideDrive] = -50;
  motor[leftSideDrive] = 50;
  wait1Msec(250);
+
+ rawBaseControl(0, 0);
 }
 
 	task Straighten()
@@ -363,38 +368,25 @@ task main()
 
 		if(vexRT(Btn8R) == 1)
 		{
-			rawliftControl(63, 63); untilPotentiometerLessThan(1400, in1);
-			rawliftControl(0, 0);
-			wait1Msec(100);
-			rawliftControl(-63, -63); untilPotentiometerGreaterThan(1070, in1);
-			rawliftControl(0, 0);
-			wait1Msec(250);
-			//bring down mobile goal
-
-			BaseControlPID(35, 0, 0.5);
-			//drive to cone
-
-			baseControl(0, 0, 100);
-			//stop
-
 			startTask(GyroReset);
-			rawliftControl(-63, -63);untilPotentiometerGreaterThan(1750, in1);
-			rawliftControl(0, 0);
-			wait1Msec(250);
-			//bring up mobile goal, gyro
-
-		  startTask(BackStraighten);
-		  rawBaseControl(-50, -50);
-		  untilLight(2850, in2);
-		  stopTask(BackStraighten);
-		  baseControl(0, 0, 100);
-		  stopTask(GyroReset);
-		  //back up, end gyro
+			wait1Msec(2000);
 
 		  startTask(PivotLeft90);
-		  rawBaseControl(0,0);
 		  //pivot to the left
 
+		  baseControl(0, 0, 250);
+		  stopTask(PivotLeft90);
+		  rawBaseControl(0, 0);
+		  wait1Msec(250);
+		  //stop, reset gyro
+
+			BaseControlPID(7.5, 0, 0.5);
+			rawBaseControl(0, 0);
+			wait1Msec(100);
+
+
+
+			//drive forwards to prepare for 20pt
 		}
 	}
 
