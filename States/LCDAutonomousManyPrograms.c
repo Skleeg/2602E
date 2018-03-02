@@ -58,7 +58,7 @@ LcdAutonomousSet( int value, bool select = false )
 		displayLCDString(0, 0, "Ten Point + Tip");
 		break;
 	case 1:
-		displayLCDString(0, 0, "Twenty Point Auto");
+		displayLCDString(0, 0, "Regular Ten Point");
 		break;
 	case 2:
 		displayLCDString(0, 0, "Zero Point Auto");
@@ -159,20 +159,20 @@ void tipperControl(int rightTip, int leftTip)
 }
 
 
-	task Straighten()
+task Straighten()
 {
 
-int difference;
-int leftStart;
-int rightStart;
+	int difference;
+	int leftStart;
+	int rightStart;
 
 
-leftStart = 101;
-rightStart = 83;
+	leftStart = 101;
+	rightStart = 83;
 
 
-SensorValue(RightEncoder) = 0;
-SensorValue(LeftEncoder) = 0;
+	SensorValue(RightEncoder) = 0;
+	SensorValue(LeftEncoder) = 0;
 
 
 	while(1 == 1)
@@ -199,17 +199,17 @@ SensorValue(LeftEncoder) = 0;
 
 task BackStraighten()
 {
-float difference;
-float leftStart;
-float rightStart;
+	float difference;
+	float leftStart;
+	float rightStart;
 
 
-leftStart = -57.5;
-rightStart = -47.5;
+	leftStart = -57.5;
+	rightStart = -47.5;
 
 
-SensorValue(RightEncoder) = 0;
-SensorValue(LeftEncoder) = 0;
+	SensorValue(RightEncoder) = 0;
+	SensorValue(LeftEncoder) = 0;
 
 	while(1 == 1)
 	{
@@ -235,17 +235,17 @@ SensorValue(LeftEncoder) = 0;
 
 task BackStraightenFast()
 {
-float difference;
-float leftStart;
-float rightStart;
+	float difference;
+	float leftStart;
+	float rightStart;
 
 
-leftStart = -101;
-rightStart = -95;
+	leftStart = -101;
+	rightStart = -95;
 
 
-SensorValue(RightEncoder) = 0;
-SensorValue(LeftEncoder) = 0;
+	SensorValue(RightEncoder) = 0;
+	SensorValue(LeftEncoder) = 0;
 
 	while(1 == 1)
 	{
@@ -330,8 +330,43 @@ task autonomous()
 		break;
 
 	case 1:
-		//Twenty Point Auto
-		break;
+		//Regular Ten Point
+				startTask(Straighten);
+		baseControl(127, 127);
+		wait1Msec(3000);
+		stopTask(Straighten);
+
+		mogoControl(-127, -127);
+		wait1Msec(500);
+
+		startTask(Straighten);
+		baseControl(127, 127);
+		wait1Msec(500);
+		stopTask(Straighten);
+
+		mogoControl(127, 127);
+		wait1Msec(500);
+
+		startTask(BackStraightenFast);
+		baseControl(-127, -127);
+		wait1Msec(1000);
+		stopTask(BackStraightenFast);
+
+		baseControl(127, -127);
+		wait1Msec(500);
+
+		startTask(Straighten);
+		baseControl(127, 127);
+		wait1Msec(1000);
+		stopTask(Straighten);
+
+		mogoControl(-127, -127);
+		wait1Msec(500);
+
+		startTask(BackStraightenFast);
+		baseControl(-127, -127);
+		wait1Msec(500);
+		stopTask(BackStraightenFast);
 
 	case 2:
 		//Stay Still, Zero Points
@@ -362,7 +397,7 @@ task autonomous()
 		}
 		break;
 
-		case 4:
+	case 4:
 		//Defensive, straight backwards
 		startTask(BackStraightenFast);
 		baseControl(-127, -127);
@@ -370,7 +405,7 @@ task autonomous()
 		stopTask(BackStraightenFast);
 		break;
 
-		case 5:
+	case 5:
 		//Double tip that sh*t
 		startTask(Straighten);
 		baseControl(127, 127);
@@ -381,7 +416,7 @@ task autonomous()
 		wait1Msec(1000);
 
 		startTask(BackStraightenFast);
-		baseControl(-127, -127)
+		baseControl(-127, -127);
 		wait1Msec(1000);
 		stopTask(BackStraightenFast);
 
@@ -404,7 +439,7 @@ task autonomous()
 		wait1Msec(1000);
 		stopTask(BackStraightenFast);
 
-		case 6:
+	case 6:
 		//Drive testing, just in case
 		while (true)
 		{
@@ -434,12 +469,11 @@ task autonomous()
 				}
 				else
 				{
-					tipperControlR(0, 0);
+					tipperControl(0, 0);
 				}
 			}
 			break;
-	default:
-		break;
+		}
 	}
 }
 
@@ -486,11 +520,11 @@ task usercontrol()
 			{
 				mogoControlR(0, 0);
 			}
-			if(vexRT[Btn5D] == 1)
+			if(vexRT[Btn5U] == 1)
 			{
 				tipperControlR(-127, -127);
 			}
-			else if(vexRT[Btn5U] == 1)
+			else if(vexRT[Btn5D] == 1)
 			{
 				tipperControlR(127, 127);
 			}
