@@ -1,6 +1,7 @@
 #pragma config(Sensor, in1,    LeftPotentiometer, sensorPotentiometer)
 #pragma config(Sensor, in3,    RightPotentiometer, sensorPotentiometer)
 #pragma config(Sensor, in4,    gyroSensor,     sensorGyro)
+#pragma config(Sensor, dgtl1,  touchSensor,     sensorTouch)
 #pragma config(Sensor, dgtl3,  RightEncoder,   sensorQuadEncoder)
 #pragma config(Sensor, dgtl7,  LeftEncoder,    sensorQuadEncoder)
 #pragma config(Motor,  port2,           rightSideDrive, tmotorVex393_MC29, openLoop, reversed)
@@ -32,7 +33,7 @@ static int MyAutonomous = 0;
 
 //Autonomous Selection
 
-#define MAX_CHOICE 4
+#define MAX_CHOICE 6
 
 void
 LcdAutonomousSet( int value, bool select = false )
@@ -49,7 +50,7 @@ LcdAutonomousSet( int value, bool select = false )
 	if( MyAutonomous == value )
 		displayLCDString(1, 5, "ACTIVE");
 	else
-		displayLCDString(1, 5, "Select...");
+		displayLCDString(1, 5, "Select");
 
 	switch(value)
 	{
@@ -57,7 +58,7 @@ LcdAutonomousSet( int value, bool select = false )
 		displayLCDString(0, 0, "Ten Point + Tip");
 		break;
 	case 1:
-		displayLCDString(0, 0, "Twenty Point Auto");
+		displayLCDString(0, 0, "Regular Ten Point");
 		break;
 	case 2:
 		displayLCDString(0, 0, "Zero Point Auto");
@@ -68,6 +69,11 @@ LcdAutonomousSet( int value, bool select = false )
 	case 4:
 		displayLCDString(0, 0, "Defensive");
 		break;
+	case 5:
+		displayLCDString(0, 0, "Double tip");
+		break;
+	case 6:
+		displayLCDString(0, 0, "RCon (no comp)");
 	default:
 		displayLCDString(0, 0, "Unknown");
 		break;
@@ -153,20 +159,20 @@ void tipperControl(int rightTip, int leftTip)
 }
 
 
-	task Straighten()
+task Straighten()
 {
 
-int difference;
-int leftStart;
-int rightStart;
+	int difference;
+	int leftStart;
+	int rightStart;
 
 
-leftStart = 101;
-rightStart = 83;
+	leftStart = 101;
+	rightStart = 83;
 
 
-SensorValue(RightEncoder) = 0;
-SensorValue(LeftEncoder) = 0;
+	SensorValue(RightEncoder) = 0;
+	SensorValue(LeftEncoder) = 0;
 
 
 	while(1 == 1)
@@ -193,17 +199,17 @@ SensorValue(LeftEncoder) = 0;
 
 task BackStraighten()
 {
-float difference;
-float leftStart;
-float rightStart;
+	float difference;
+	float leftStart;
+	float rightStart;
 
 
-leftStart = -57.5;
-rightStart = -47.5;
+	leftStart = -57.5;
+	rightStart = -47.5;
 
 
-SensorValue(RightEncoder) = 0;
-SensorValue(LeftEncoder) = 0;
+	SensorValue(RightEncoder) = 0;
+	SensorValue(LeftEncoder) = 0;
 
 	while(1 == 1)
 	{
@@ -229,17 +235,17 @@ SensorValue(LeftEncoder) = 0;
 
 task BackStraightenFast()
 {
-float difference;
-float leftStart;
-float rightStart;
+	float difference;
+	float leftStart;
+	float rightStart;
 
 
-leftStart = -101;
-rightStart = -95;
+	leftStart = -101;
+	rightStart = -95;
 
 
-SensorValue(RightEncoder) = 0;
-SensorValue(LeftEncoder) = 0;
+	SensorValue(RightEncoder) = 0;
+	SensorValue(LeftEncoder) = 0;
 
 	while(1 == 1)
 	{
@@ -293,31 +299,74 @@ task autonomous()
 		baseControl(127, -127);
 		wait1Msec(500);
 
+		startTask(Straighten);
 		baseControl(127, 127);
 		wait1Msec(1000);
+		stopTask(Straighten);
 
 		mogoControl(-127, -127);
 		wait1Msec(500);
 
+		startTask(BackStraightenFast);
 		baseControl(-127, -127);
 		wait1Msec(500);
+		stopTask(BackStraightenFast);
 
 		baseControl(127, -127);
 		wait1Msec(500);
 
+		startTask(BackStraightenFast);
 		baseControl(-127, -127);
 		wait1Msec(500);
+		stopTask(BackStraightenFast);
 
 		tipperControl(-127, -127);
 		wait1Msec(500);
 
+		startTask(Straighten);
 		baseControl(127, 127);
 		wait1Msec(1000);
+		stopTask(Straighten);
 		break;
 
 	case 1:
-		//Twenty Point Auto
-		break;
+		//Regular Ten Point
+				startTask(Straighten);
+		baseControl(127, 127);
+		wait1Msec(3000);
+		stopTask(Straighten);
+
+		mogoControl(-127, -127);
+		wait1Msec(500);
+
+		startTask(Straighten);
+		baseControl(127, 127);
+		wait1Msec(500);
+		stopTask(Straighten);
+
+		mogoControl(127, 127);
+		wait1Msec(500);
+
+		startTask(BackStraightenFast);
+		baseControl(-127, -127);
+		wait1Msec(1000);
+		stopTask(BackStraightenFast);
+
+		baseControl(127, -127);
+		wait1Msec(500);
+
+		startTask(Straighten);
+		baseControl(127, 127);
+		wait1Msec(1000);
+		stopTask(Straighten);
+
+		mogoControl(-127, -127);
+		wait1Msec(500);
+
+		startTask(BackStraightenFast);
+		baseControl(-127, -127);
+		wait1Msec(500);
+		stopTask(BackStraightenFast);
 
 	case 2:
 		//Stay Still, Zero Points
@@ -348,17 +397,83 @@ task autonomous()
 		}
 		break;
 
-		case 4:
+	case 4:
 		//Defensive, straight backwards
+		startTask(BackStraightenFast);
 		baseControl(-127, -127);
 		wait1Msec(3000);
-		baseControl(0, 0);
-		mogoControl(0, 0);
-		tipperControl(0, 0);
+		stopTask(BackStraightenFast);
 		break;
 
-	default:
-		break;
+	case 5:
+		//Double tip that sh*t
+		startTask(Straighten);
+		baseControl(127, 127);
+		wait1Msec(3000);
+		stopTask(Straighten);
+
+		tipperControl(127, 127);
+		wait1Msec(1000);
+
+		startTask(BackStraightenFast);
+		baseControl(-127, -127);
+		wait1Msec(1000);
+		stopTask(BackStraightenFast);
+
+		tipperControl(-127, -127);
+		wait1Msec(1000);
+
+		baseControl(127, -127);
+		wait1Msec(1000);
+
+		startTask(Straighten);
+		baseControl(127, 127);
+		wait1Msec(1000);
+		stopTask(Straighten);
+
+		tipperControl(127, 127);
+		wait1Msec(1000);
+
+		startTask(BackStraightenFast);
+		baseControl(-127, -127);
+		wait1Msec(1000);
+		stopTask(BackStraightenFast);
+
+	case 6:
+		//Drive testing, just in case
+		while (true)
+		{
+			{
+				motor[leftSideDrive] = vexRT[Ch3];
+				motor[rightSideDrive] = vexRT[Ch2];
+
+				if(vexRT[Btn6U] == 1)
+				{
+					mogoControl(-127, -127);
+				}
+				else if(vexRT[Btn6D] == 1)
+				{
+					mogoControl(127, 127);
+				}
+				else
+				{
+					mogoControl(0, 0);
+				}
+				if(vexRT[Btn5D] == 1)
+				{
+					tipperControl(-127, -127);
+				}
+				else if(vexRT[Btn5U] == 1)
+				{
+					tipperControl(127, 127);
+				}
+				else
+				{
+					tipperControl(0, 0);
+				}
+			}
+			break;
+		}
 	}
 }
 
@@ -405,11 +520,11 @@ task usercontrol()
 			{
 				mogoControlR(0, 0);
 			}
-			if(vexRT[Btn5D] == 1)
+			if(vexRT[Btn5U] == 1)
 			{
 				tipperControlR(-127, -127);
 			}
-			else if(vexRT[Btn5U] == 1)
+			else if(vexRT[Btn5D] == 1)
 			{
 				tipperControlR(127, 127);
 			}
