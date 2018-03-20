@@ -1,7 +1,9 @@
 #pragma config(Sensor, in1,    LeftPotentiometer, sensorPotentiometer)
+#pragma config(Sensor, in2,    CenterLine,     sensorLineFollower)
 #pragma config(Sensor, in3,    RightPotentiometer, sensorPotentiometer)
-#pragma config(Sensor, in4,    gyroSensor,     sensorGyro)
-#pragma config(Sensor, dgtl1,  touchSensor,     sensorTouch)
+#pragma config(Sensor, in4,    GyroSensor,     sensorGyro)
+#pragma config(Sensor, in6,    LeftLine,       sensorLineFollower)
+#pragma config(Sensor, in7,    RightLine,      sensorLineFollower)
 #pragma config(Sensor, dgtl3,  RightEncoder,   sensorQuadEncoder)
 #pragma config(Sensor, dgtl7,  LeftEncoder,    sensorQuadEncoder)
 #pragma config(Motor,  port2,           rightSideDrive, tmotorVex393_MC29, openLoop, reversed)
@@ -27,96 +29,6 @@
 //Main competition background code...do not modify!
 #include "Vex_Competition_Includes.c"
 
-#include "getlcdbuttons.c"
-
-static int MyAutonomous = 0;
-
-//Autonomous Selection
-
-#define MAX_CHOICE 7
-
-void
-LcdAutonomousSet( int value, bool select = false )
-{
-	clearLCDLine(0);
-	clearLCDLine(1);
-
-	displayLCDString(1, 0, l_arr_str);
-	displayLCDString(1, 13, r_arr_str);
-
-	if(select)
-		MyAutonomous = value;
-
-	if( MyAutonomous == value )
-		displayLCDString(1, 5, "ACTIVE");
-	else
-		displayLCDString(1, 5, "Select");
-
-	switch(value)
-	{
-	case 0:
-		displayLCDString(0, 0, "Ten Point + Tip");
-		break;
-	case 1:
-		displayLCDString(0, 0, "Regular Ten Point");
-		break;
-	case 2:
-		displayLCDString(0, 0, "Zero Point Auto");
-		break;
-	case 3:
-		displayLCDString(0, 0, "Battery Test");
-		break;
-	case 4:
-		displayLCDString(0, 0, "Defensive");
-		break;
-	case 5:
-		displayLCDString(0, 0, "Double tip");
-		break;
-	case 6:
-		displayLCDString(0, 0, "RCon (no comp)");
-	case 7:
-		displayLCDString(0, 0, "Single Tip ;)");
-	default:
-		displayLCDString(0, 0, "Unknown");
-		break;
-	}
-}
-
-//Cycle through different autonomous choices
-
-void
-LcdAutonomousSelection()
-{
-	TControllerButtons button;
-	int choice = 0;
-
-	bLCDBacklight = true;
-
-	LcdAutonomousSet(0);
-
-	while( bIfiRobotDisabled )
-	{
-		button = getLcdButtons();
-
-		if( ( button == kButtonLeft ) || ( button == kButtonRight ) )
-		{
-			if( button == kButtonLeft )
-				if( --choice < 0 ) choice = MAX_CHOICE;
-
-			if( button == kButtonRight )
-				if( ++choice > MAX_CHOICE ) choice = 0;
-			LcdAutonomousSet(choice);
-		}
-
-		if( button == kButtonCenter )
-			LcdAutonomousSet( choice, true );
-
-		wait1Msec(10);
-	}
-}
-
-
-
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
 /*                                                                           */
@@ -129,9 +41,18 @@ LcdAutonomousSelection()
 
 void pre_auton()
 {
+	// Set bStopTasksBetweenModes to false if you want to keep user created tasks
+	// running between Autonomous and Driver controlled modes. You will need to
+	// manage all user created tasks if set to false.
 	bStopTasksBetweenModes = true;
 
-	LcdAutonomousSelection();
+	// Set bDisplayCompetitionStatusOnLcd to false if you don't want the LCD
+	// used by the competition include file, for example, you might want
+	// to display your team name on the LCD in this function.
+	// bDisplayCompetitionStatusOnLcd = false;
+
+	// All activities that occur before the competition starts
+	// Example: clearing encoders, setting servo positions, ...
 }
 
 /*---------------------------------------------------------------------------*/
@@ -143,7 +64,7 @@ void pre_auton()
 /*                                                                           */
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
-	task Battery()
+task Battery()
 {
 bLCDBacklight = true;
 string mainBattery, backupBattery;
@@ -340,7 +261,7 @@ SensorScale[in4] = 103.86;
 SensorFullCount[in4] = 3600;
 
 //Specify the number of degrees for the robot to turn (1 degree = 10, or 900 = 90 degrees)
- int degrees100 = 1800;
+ int degrees100 = 2000;
 
 //While the absolute value of the gyro is less than the desired rotation...
  while(abs(SensorValue[in4]) < degrees100)
@@ -357,6 +278,114 @@ SensorFullCount[in4] = 3600;
 
  baseControl(0,0, 100);
  stopTask(PivotLeft100);
+}
+
+task aimForTheMoon()
+{
+//Adjust SensorScale to correct the scaling for your gyro
+SensorScale[in4] = 103.86;
+ //Adjust SensorFullCount to set the "rollover" point. 3600 sets the rollover point to +/-3600
+SensorFullCount[in4] = 3600;
+
+//Specify the number of degrees for the robot to turn (1 degree = 10, or 900 = 90 degrees)
+ int degrees100 = 0100;
+
+//While the absolute value of the gyro is less than the desired rotation...
+ while(abs(SensorValue[in4]) < degrees100)
+ {
+ //...continue turning
+ motor[rightSideDrive] = 50;
+ motor[leftSideDrive] = -50;
+ }
+
+//Brief brake to stop some drift
+ motor[rightSideDrive] = -25;
+ motor[leftSideDrive] = 25;
+ wait1Msec(250);
+
+ baseControl(0,0, 100);
+ stopTask(aimForTheMoon);
+}
+
+task thirtyPivot()
+{
+//Adjust SensorScale to correct the scaling for your gyro
+SensorScale[in4] = 103.86;
+ //Adjust SensorFullCount to set the "rollover" point. 3600 sets the rollover point to +/-3600
+SensorFullCount[in4] = 3600;
+
+//Specify the number of degrees for the robot to turn (1 degree = 10, or 900 = 90 degrees)
+ int degrees100 = 2200;
+
+//While the absolute value of the gyro is less than the desired rotation...
+ while(abs(SensorValue[in4]) < degrees100)
+ {
+ //...continue turning
+ motor[rightSideDrive] = 50;
+ motor[leftSideDrive] = -50;
+ }
+
+//Brief brake to stop some drift
+ motor[rightSideDrive] = -25;
+ motor[leftSideDrive] = 25;
+ wait1Msec(250);
+
+ baseControl(0,0, 100);
+ stopTask(thirtyPivot);
+}
+
+task twentyPointPivot()
+{
+//Adjust SensorScale to correct the scaling for your gyro
+SensorScale[in4] = 103.86;
+ //Adjust SensorFullCount to set the "rollover" point. 3600 sets the rollover point to +/-3600
+SensorFullCount[in4] = 3600;
+
+//Specify the number of degrees for the robot to turn (1 degree = 10, or 900 = 90 degrees)
+ int degrees100 = 1030;
+
+//While the absolute value of the gyro is less than the desired rotation...
+ while(abs(SensorValue[in4]) < degrees100)
+ {
+ //...continue turning
+ motor[rightSideDrive] = 50;
+ motor[leftSideDrive] = -50;
+ }
+
+//Brief brake to stop some drift
+ motor[rightSideDrive] = -25;
+ motor[leftSideDrive] = 25;
+ wait1Msec(250);
+
+ baseControl(0,0, 100);
+ stopTask(twentyPointPivot);
+}
+
+task fourtyPivotLeft()
+{
+//Adjust SensorScale to correct the scaling for your gyro
+SensorScale[in4] = 103.86;
+ //Adjust SensorFullCount to set the "rollover" point. 3600 sets the rollover point to +/-3600
+SensorFullCount[in4] = 3600;
+
+//Specify the number of degrees for the robot to turn (1 degree = 10, or 900 = 90 degrees)
+ int degrees100 = 1000;
+
+//While the absolute value of the gyro is less than the desired rotation...
+ while(abs(SensorValue[in4]) < degrees100)
+ {
+ //...continue turning
+ motor[rightSideDrive] = 50;
+ motor[leftSideDrive] = -50;
+ }
+
+//Brief brake to stop some drift
+ motor[rightSideDrive] = -25;
+ motor[leftSideDrive] = 25;
+ wait1Msec(250);
+
+ baseControl(0,0, 100);
+ stopTask(fourtyPivotLeft);
 }
 
 	task Straighten()
@@ -395,6 +424,44 @@ SensorValue(LeftEncoder) = 0;
 		}
 	}
 }
+
+task FastStraighten()
+{
+
+int difference;
+int leftStart;
+float rightStart;
+
+
+leftStart = 127;
+rightStart = 105.41;
+
+
+SensorValue(RightEncoder) = 0;
+SensorValue(LeftEncoder) = 0;
+
+
+	while(1 == 1)
+	{
+		difference = abs(SensorValue(LeftEncoder) - SensorValue(RightEncoder))/1000;
+
+		if(SensorValue(RightEncoder) == SensorValue(LeftEncoder))
+		{
+			straightBaseControl(leftStart, rightStart);
+		}
+
+		if(SensorValue(RightEncoder) > SensorValue(LeftEncoder))
+		{
+			straightBaseControl(leftStart, (rightStart - difference));
+		}
+
+		if(SensorValue(LeftEncoder) > SensorValue(RightEncoder))
+		{
+			straightBaseControl((leftStart - difference), rightStart);
+		}
+	}
+}
+
 
 task BackStraighten()
 {
@@ -439,8 +506,8 @@ float leftStart;
 float rightStart;
 
 
-leftStart = -101;
-rightStart = -95;
+leftStart = -127;
+rightStart = -119.5;
 
 
 SensorValue(RightEncoder) = 0;
@@ -468,240 +535,16 @@ SensorValue(LeftEncoder) = 0;
 	}
 }
 
-
-
-task autonomous()
+	task autonomous()
 {
-	switch( MyAutonomous )
-	{
-	case 0:
-		//Ten Point + Tip
-
-		startTask(Straighten);
-		rawBaseControl(127, 127);
-		wait1Msec(3000);
-		stopTask(Straighten);
-
-		mogoControl(-127, -127, 500);
-
-		startTask(Straighten);
-		rawBaseControl(127, 127);
-		wait1Msec(500);
-		stopTask(Straighten);
-
-		mogoControl(127, 127);
-		wait1Msec(500);
 
 		startTask(BackStraightenFast);
-		rawBaseControl(-127, -127);
-		wait1Msec(1000);
-		stopTask(BackStraightenFast);
-
-		rawBaseControl(127, -127);
-		wait1Msec(500);
-
-		startTask(Straighten);
-		rawBaseControl(127, 127);
-		wait1Msec(1000);
-		stopTask(Straighten);
-
-		mogoControl(-127, -127);
-		wait1Msec(500);
-
-		startTask(BackStraightenFast);
-		rawBaseControl(-127, -127);
-		wait1Msec(500);
-		stopTask(BackStraightenFast);
-
-		rawBaseControl(127, -127);
-		wait1Msec(500);
-
-		startTask(BackStraightenFast);
-		rawBaseControl(-127, -127);
-		wait1Msec(500);
-		stopTask(BackStraightenFast);
-
-		tipperControl(-127, -127, 500);
-
-		startTask(Straighten);
-		rawBaseControl(127, 127);
-		wait1Msec(1000);
-		stopTask(Straighten);
-		break;
-
-	case 1:
-		//Regular Ten Point
-				startTask(Straighten);
-		rawBaseControl(127, 127);
-		wait1Msec(3000);
-		stopTask(Straighten);
-
-		mogoControl(-127, -127);
-		wait1Msec(500);
-
-		startTask(Straighten);
-		rawBaseControl(127, 127);
-		wait1Msec(500);
-		stopTask(Straighten);
-
-		mogoControl(127, 127);
-		wait1Msec(500);
-
-		startTask(BackStraightenFast);
-		rawBaseControl(-127, -127);
-		wait1Msec(1000);
-		stopTask(BackStraightenFast);
-
-		rawBaseControl(127, -127);
-		wait1Msec(500);
-
-		startTask(Straighten);
-		rawBaseControl(127, 127);
-		wait1Msec(1000);
-		stopTask(Straighten);
-
-		mogoControl(-127, -127);
-		wait1Msec(500);
-
-		startTask(BackStraightenFast);
-		rawBaseControl(-127, -127);
-		wait1Msec(500);
-		stopTask(BackStraightenFast);
-
-	case 2:
-		//Stay Still, Zero Points
-		rawBaseControl(0, 0);
-		mogoControl(0, 0);
-		tipperControl(0, 0);
-		wait1Msec(15000);
-		break;
-
-	case 3:
-		//Battery Test
-		bLCDBacklight = true;
-		string mainBattery, backupBattery;
-
-		while(1==1)
-		{
-			clearLCDLine(0);
-			clearLCDLine(1);
-			//Primary battery voltage display
-			displayLCDString(0, 0, "Primary: ");
-			sprintf(mainBattery, "%1.2f%c", nImmediateBatteryLevel/1000.0,'V');
-			displayNextLCDString(mainBattery);
-			//Backup battery voltage display
-			displayLCDString(1, 0, "Backup: ");
-			sprintf(backupBattery, "%1.2f%c", BackupBatteryLevel/1000.0, 'V');
-			displayNextLCDString(backupBattery);
-			wait1Msec(100);
-		}
-		break;
-
-	case 4:
-		//Defensive, straight backwards
-		startTask(BackStraightenFast);
-		rawBaseControl(-127, -127);
-		wait1Msec(3000);
-		stopTask(BackStraightenFast);
-		break;
-
-	case 5:
-		//Double tip that sh*t
-		startTask(Straighten);
-		rawBaseControl(127, 127);
-		wait1Msec(3000);
-		stopTask(Straighten);
-
-		tipperControl(127, 127);
-		wait1Msec(1000);
-
-		startTask(BackStraightenFast);
-		rawBaseControl(-127, -127);
-		wait1Msec(1000);
-		stopTask(BackStraightenFast);
-
-		tipperControl(-127, -127);
-		wait1Msec(1000);
-
-		rawBaseControl(127, -127);
-		wait1Msec(1000);
-
-		startTask(Straighten);
-		rawBaseControl(127, 127);
-		wait1Msec(1000);
-		stopTask(Straighten);
-
-		tipperControl(127, 127);
-		wait1Msec(1000);
-
-		startTask(BackStraightenFast);
-		rawBaseControl(-127, -127);
-		wait1Msec(1000);
-		stopTask(BackStraightenFast);
-
-	case 6:
-		//Drive testing, just in case
-		while (true)
-		{
-			{
-				motor[leftSideDrive] = vexRT[Ch3];
-				motor[rightSideDrive] = vexRT[Ch2];
-
-				if(vexRT[Btn6U] == 1)
-				{
-					mogoControl(-127, -127);
-				}
-				else if(vexRT[Btn6D] == 1)
-				{
-					mogoControl(127, 127);
-				}
-				else
-				{
-					mogoControl(0, 0);
-				}
-				if(vexRT[Btn5D] == 1)
-				{
-					tipperControl(-127, -127);
-				}
-				else if(vexRT[Btn5U] == 1)
-				{
-					tipperControl(127, 127);
-				}
-				else
-				{
-					tipperControl(0, 0);
-				}
-			}
-			break:
-			{
-
-			case 7:
-
-
-			startTask(BackStraightenFast);
-			baseControl(-127, -127, 1250);
+			baseControl(-127, -127, 5500);
 			stopTask(BackStraightenFast);
 			baseControl(0, 0, 250);
 
-			tipControl(120, 120, 1370);
-			tipControl(0, 0, 0);
-			//move tip up
-
-			tipControl(60, 60, 500);
-			BaseControlPID(30, 0, 1);
 
 		}
-
-
-
-		}
-	}
-}
-}
-break;
-		}
-	}
-}
 
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
@@ -712,52 +555,49 @@ break;
 /*                                                                           */
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
-void mogoControlR(int rightMogo, int leftMogo)
-{
-	motor[leftMobileGoal] = leftMogo;
-	motor[rightMobileGoal] = rightMogo;
-}
-void tipperControlR(int rightTip, int leftTip)
-{
-	motor[leftTipper] = leftTip;
-	motor[rightTipper] = rightTip;
-	//nice
-}
 
 task usercontrol()
 {
-
-
-	while (true)
+	while(1==1)
 	{
-		{
-			motor[leftSideDrive] = vexRT[Ch3];
-			motor[rightSideDrive] = vexRT[Ch2];
+		motor[leftSideDrive] = vexRT[Ch3];
+		motor[rightSideDrive] = vexRT[Ch2];
 
-			if(vexRT[Btn6U] == 1)
-			{
-				mogoControlR(-127, -127);
-			}
-			else if(vexRT[Btn6D] == 1)
-			{
-				mogoControlR(127, 127);
-			}
-			else
-			{
-				mogoControlR(0, 0);
-			}
-			if(vexRT[Btn5U] == 1)
-			{
-				tipperControlR(-127, -127);
-			}
-			else if(vexRT[Btn5D] == 1)
-			{
-				tipperControlR(127, 127);
-			}
-			else
-			{
-				tipperControlR(0, 0);
-			}
+
+		if(vexRT[Btn8U] == 1)
+		{
+			startTask(Battery);
 		}
-	}
+		if(vexRT[Btn6U] == 1)
+		{
+			motor[rightMobileGoal] = -127;
+			motor[leftMobileGoal] = -127;
+		}
+		else if(vexRT[Btn6D] == 1)
+		{
+			motor[rightMobileGoal] = 127;
+			motor[leftMobileGoal] = 127;
+		}
+		else
+		{
+			motor[rightMobileGoal] = 0;
+			motor[leftMobileGoal] = 0;
+		}
+		if(vexRT[Btn5U] == 1)
+		{
+			motor[rightTipper] = -63;
+			motor[leftTipper] = -63;
+		}
+		else if(vexRT[Btn5D] == 1)
+		{
+			motor[rightTipper] = 63;
+			motor[leftTipper] = 63;
+		}
+		else
+		{
+			motor[rightTipper] = 0;
+			motor[leftTipper] = 0;
+		}
+
+}
 }

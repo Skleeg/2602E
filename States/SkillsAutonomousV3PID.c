@@ -377,7 +377,7 @@ task main()
 			rawliftControl(0, 0);
 			//bring down mobile goal
 
-			liftControl(-63, -63, 200);
+			liftControl(-63, -63, 225);
 			rawliftControl(0,0);
 			wait1Msec(250);
 			//bring up mobile goal
@@ -423,16 +423,25 @@ task main()
 		  baseControl(0, 0, 250);
 		  //pivot left
 
-		  BaseControlPID(1, 0, 1);
-			baseControl(153, 100, 25000);
+			startTask(Straighten);
+			baseControl(127, 127, 1700);
+			stopTask(Straighten);
 			//drive to 20 pt
 
-			// liftControl(-63, -63, 500);
-			// rawliftControl(0, 0);
+			liftControl(63, 63, 250);
+			liftControl(0, 0, 100);
+			//bring mobile goal out
+
+			liftControl(-63, -63, 800);
+			 rawliftControl(0, 0);
 			//bring mobile goal in
 
-		//	BaseControlPID(-36, 0, 1);
-			// baseControl(0, 0, 250);
+		startTask(BackStraightenFast);
+			 baseControl(-127, -127, 500);
+			 baseControl(-127, -127, 1500);
+			 untilLight(2850, in2);
+			 stopTask(BackStraightenFast);
+			 baseControl(0, 0, 100);
 			//back out
 
 

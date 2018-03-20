@@ -45,8 +45,8 @@ void PIDbaseControl (int speed)
 
 void straightBaseControl (int leftSide, int rightSide)
 {
-	leftSide = motor[leftSideDrive];
-	rightSide = motor[rightSideDrive];
+ 		motor[leftSideDrive] = leftSide;
+		motor[rightSideDrive] = rightSide;
 }
 
 void baseControl(int leftPower, int rightPower, int baseTime)
@@ -368,25 +368,72 @@ task main()
 
 		if(vexRT(Btn8R) == 1)
 		{
-			startTask(GyroReset);
-			wait1Msec(2000);
+		tipControl(120, 120, 650);
+			tipControl(0, 0, 0);
+			//move tip up
 
-		  startTask(PivotLeft90);
+				rawliftControl(63, 63); untilPotentiometerLessThan(1400, in1);
+			rawliftControl(0, 0);
+			wait1Msec(100);
+			rawliftControl(-63, -63); untilPotentiometerGreaterThan(1070, in1);
+			rawliftControl(0, 0);
+			//bring down mobile goal
+
+			liftControl(-63, -63, 200);
+			rawliftControl(0,0);
+			wait1Msec(250);
+			//bring up mobile goal
+
+			BaseControlPID(42, 0, 0.7);
+			//drive to cone
+
+			baseControl(0, 0, 100);
+			//stop
+
+			startTask(GyroReset);
+			rawliftControl(-63, -63);untilPotentiometerGreaterThan(1800, in1);
+			rawliftControl(0, 0);
+			wait1Msec(250);
+			//bring up mobile goal, gyro
+
+		  startTask(BackStraighten);
+		  rawBaseControl(-50, -50);
+		  untilLight(2850, in2);
+		  //back up to line
+
+		  baseControl(-63, -63, 130);
+		  //back up more
+
+		  stopTask(BackStraighten);
+		  baseControl(0, 0, 100);
+		  stopTask(GyroReset);
+		  //back up, end gyro
+
+		  startTask(PivotLeft100);
+		  wait1Msec(1000);
+		  baseControl(0, 0, 250);
 		  //pivot to the left
 
+		  BaseControlPID(16, 0, 0.5);
+		  baseControl(0, 0, 2000);
+		  //drive forwards
+
+		  startTask(PivotLeft100);
+		  wait1Msec(1000);
 		  baseControl(0, 0, 250);
-		  stopTask(PivotLeft90);
-		  rawBaseControl(0, 0);
-		  wait1Msec(250);
-		  //stop, reset gyro
+		  //pivot left
 
-			BaseControlPID(7.5, 0, 0.5);
-			rawBaseControl(0, 0);
-			wait1Msec(100);
+		  BaseControlPID(1, 0, 1);
+			baseControl(153, 100, 2500);
+			//drive to 20 pt
 
+			// liftControl(-63, -63, 500);
+			// rawliftControl(0, 0);
+			//bring mobile goal in
 
-
-			//drive forwards to prepare for 20pt
+		//	BaseControlPID(-36, 0, 1);
+			// baseControl(0, 0, 250);
+			//back out
 		}
 	}
 

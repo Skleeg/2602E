@@ -210,7 +210,7 @@ SensorScale[in4] = 103.86;
 SensorFullCount[in4] = 3600;
 
 //Specify the number of degrees for the robot to turn (1 degree = 10, or 900 = 90 degrees)
- int degrees100 = 1105;
+ int degrees100 = 2000;
 
 //While the absolute value of the gyro is less than the desired rotation...
  while(abs(SensorValue[in4]) < degrees100)
@@ -227,6 +227,114 @@ SensorFullCount[in4] = 3600;
 
  baseControl(0,0, 100);
  stopTask(PivotLeft100);
+}
+
+task aimForTheMoon()
+{
+//Adjust SensorScale to correct the scaling for your gyro
+SensorScale[in4] = 103.86;
+ //Adjust SensorFullCount to set the "rollover" point. 3600 sets the rollover point to +/-3600
+SensorFullCount[in4] = 3600;
+
+//Specify the number of degrees for the robot to turn (1 degree = 10, or 900 = 90 degrees)
+ int degrees100 = 0100;
+
+//While the absolute value of the gyro is less than the desired rotation...
+ while(abs(SensorValue[in4]) < degrees100)
+ {
+ //...continue turning
+ motor[rightSideDrive] = 50;
+ motor[leftSideDrive] = -50;
+ }
+
+//Brief brake to stop some drift
+ motor[rightSideDrive] = -25;
+ motor[leftSideDrive] = 25;
+ wait1Msec(250);
+
+ baseControl(0,0, 100);
+ stopTask(aimForTheMoon);
+}
+
+task thirtyPivot()
+{
+//Adjust SensorScale to correct the scaling for your gyro
+SensorScale[in4] = 103.86;
+ //Adjust SensorFullCount to set the "rollover" point. 3600 sets the rollover point to +/-3600
+SensorFullCount[in4] = 3600;
+
+//Specify the number of degrees for the robot to turn (1 degree = 10, or 900 = 90 degrees)
+ int degrees100 = 2200;
+
+//While the absolute value of the gyro is less than the desired rotation...
+ while(abs(SensorValue[in4]) < degrees100)
+ {
+ //...continue turning
+ motor[rightSideDrive] = 50;
+ motor[leftSideDrive] = -50;
+ }
+
+//Brief brake to stop some drift
+ motor[rightSideDrive] = -25;
+ motor[leftSideDrive] = 25;
+ wait1Msec(250);
+
+ baseControl(0,0, 100);
+ stopTask(thirtyPivot);
+}
+
+task twentyPointPivot()
+{
+//Adjust SensorScale to correct the scaling for your gyro
+SensorScale[in4] = 103.86;
+ //Adjust SensorFullCount to set the "rollover" point. 3600 sets the rollover point to +/-3600
+SensorFullCount[in4] = 3600;
+
+//Specify the number of degrees for the robot to turn (1 degree = 10, or 900 = 90 degrees)
+ int degrees100 = 1030;
+
+//While the absolute value of the gyro is less than the desired rotation...
+ while(abs(SensorValue[in4]) < degrees100)
+ {
+ //...continue turning
+ motor[rightSideDrive] = 50;
+ motor[leftSideDrive] = -50;
+ }
+
+//Brief brake to stop some drift
+ motor[rightSideDrive] = -25;
+ motor[leftSideDrive] = 25;
+ wait1Msec(250);
+
+ baseControl(0,0, 100);
+ stopTask(twentyPointPivot);
+}
+
+task fourtyPivotLeft()
+{
+//Adjust SensorScale to correct the scaling for your gyro
+SensorScale[in4] = 103.86;
+ //Adjust SensorFullCount to set the "rollover" point. 3600 sets the rollover point to +/-3600
+SensorFullCount[in4] = 3600;
+
+//Specify the number of degrees for the robot to turn (1 degree = 10, or 900 = 90 degrees)
+ int degrees100 = 1000;
+
+//While the absolute value of the gyro is less than the desired rotation...
+ while(abs(SensorValue[in4]) < degrees100)
+ {
+ //...continue turning
+ motor[rightSideDrive] = 50;
+ motor[leftSideDrive] = -50;
+ }
+
+//Brief brake to stop some drift
+ motor[rightSideDrive] = -25;
+ motor[leftSideDrive] = 25;
+ wait1Msec(250);
+
+ baseControl(0,0, 100);
+ stopTask(fourtyPivotLeft);
 }
 
 	task Straighten()
@@ -265,6 +373,44 @@ SensorValue(LeftEncoder) = 0;
 		}
 	}
 }
+
+task FastStraighten()
+{
+
+int difference;
+int leftStart;
+float rightStart;
+
+
+leftStart = 127;
+rightStart = 105.41;
+
+
+SensorValue(RightEncoder) = 0;
+SensorValue(LeftEncoder) = 0;
+
+
+	while(1 == 1)
+	{
+		difference = abs(SensorValue(LeftEncoder) - SensorValue(RightEncoder))/1000;
+
+		if(SensorValue(RightEncoder) == SensorValue(LeftEncoder))
+		{
+			straightBaseControl(leftStart, rightStart);
+		}
+
+		if(SensorValue(RightEncoder) > SensorValue(LeftEncoder))
+		{
+			straightBaseControl(leftStart, (rightStart - difference));
+		}
+
+		if(SensorValue(LeftEncoder) > SensorValue(RightEncoder))
+		{
+			straightBaseControl((leftStart - difference), rightStart);
+		}
+	}
+}
+
 
 task BackStraighten()
 {
@@ -309,8 +455,8 @@ float leftStart;
 float rightStart;
 
 
-leftStart = -101;
-rightStart = -95;
+leftStart = -127;
+rightStart = -119.5;
 
 
 SensorValue(RightEncoder) = 0;
@@ -366,11 +512,12 @@ task main()
 
 		if(vexRT(Btn8R) == 1)
 		{
-			tipControl(120, 120, 650);
+
+				tipControl(120, 120, 650);
 			tipControl(0, 0, 0);
 			//move tip up
 
-				rawliftControl(63, 63); untilPotentiometerLessThan(1400, in1);
+			rawliftControl(63, 63); untilPotentiometerLessThan(1400, in1);
 			rawliftControl(0, 0);
 			wait1Msec(100);
 			rawliftControl(-63, -63); untilPotentiometerGreaterThan(1070, in1);
@@ -410,30 +557,86 @@ task main()
 		  startTask(PivotLeft100);
 		  wait1Msec(1000);
 		  baseControl(0, 0, 250);
-		  startTask(GyroReset);
 		  //pivot to the left
 
-		  BaseControlPID(16, 0, 0.5);
-		  baseControl(0, 0, 2000);
+		  BaseControlPID(23, 0, 0.5);
 		  //drive forwards
 
-		  stopTask(GyroReset);
-		  startTask(PivotLeft100);
-		  wait1Msec(1000);
-		  baseControl(0, 0, 250);
-		  //pivot left
 
-		  BaseControlPID(1, 0, 1);
-			baseControl(153, 100, 25000);
-			//drive to 20 pt
-
-			// liftControl(-63, -63, 500);
-			// rawliftControl(0, 0);
+			liftControl(-63, -63, 850);
+			 rawliftControl(0, 0);
 			//bring mobile goal in
 
-		//	BaseControlPID(-36, 0, 1);
-			// baseControl(0, 0, 250);
+
+			startTask(BackStraightenFast);
+			baseControl(-127, -127, 300);
+			stopTask(BackStraightenFast);
+			baseControl(0, 0, 250);
+			//begin backup (fast)
+
+			startTask(BackStraighten);
+			 baseControl(-100, -100,  50);
+			 stopTask(BackStraighten);
+			 untilLight(2850, in2);
+			 baseControl(0, 0, 250);
 			//back out
+
+			startTask(GyroReset);
+			wait1Msec(2100);
+			stopTask(GyroReset);
+			startTask(thirtyPivot);
+			//180 degrees pivot
+
+			liftControl(0, 0, 2500);
+			rawliftControl(63, 63); untilPotentiometerLessThan(1400, in1);
+			rawliftControl(0, 0);
+			wait1Msec(100);
+			rawliftControl(-63, -63); untilPotentiometerGreaterThan(1070, in1);
+			rawliftControl(0, 0);
+			//bring down mobile goal
+
+			liftControl(-63, -63, 200);
+			rawliftControl(0,0);
+			wait1Msec(250);
+			//bring up mobile goal
+
+			startTask(GyroReset);
+			baseControl(0, 0, 100);
+			wait1Msec(2100);
+			BaseControlPID(60, 0, 0.7);
+			//drive to cone
+
+			BaseControlPID(10, 0, 0.5);
+			startTask(aimForTheMoon);
+
+			rawliftControl(-63, -63);untilPotentiometerGreaterThan(1800, in1);
+			rawliftControl(0, 0);
+			wait1Msec(250);
+			//bring up mobile goal
+
+			BaseControlPID(6, 0, 0.5);
+			//drive forward a bit
+
+
+			startTask(FastStraighten);
+			baseControl(127, 127, 3000);
+			stopTask(FastStraighten);
+			baseControl(0, 0, 100);
+			//drive to 20
+
+			liftControl(-63, -63, 850);
+			 rawliftControl(0, 0);
+			//bring mobile goal in
+
+			startTask(BackStraightenFast);
+			baseControl(-127, -127, 2000);
+			stopTask(BackStraightenFast);
+			baseControl(0, 0, 100);
+			//get out of there
+
+
+
+
 
 
 		}

@@ -210,7 +210,7 @@ SensorScale[in4] = 103.86;
 SensorFullCount[in4] = 3600;
 
 //Specify the number of degrees for the robot to turn (1 degree = 10, or 900 = 90 degrees)
- int degrees100 = 1105;
+ int degrees100 = 1800;
 
 //While the absolute value of the gyro is less than the desired rotation...
  while(abs(SensorValue[in4]) < degrees100)
@@ -366,76 +366,19 @@ task main()
 
 		if(vexRT(Btn8R) == 1)
 		{
-			tipControl(120, 120, 650);
+			startTask(BackStraightenFast);
+			baseControl(-127, -127, 1250);
+			stopTask(BackStraightenFast);
+			baseControl(0, 0, 250);
+
+			tipControl(120, 120, 1370);
 			tipControl(0, 0, 0);
 			//move tip up
 
-				rawliftControl(63, 63); untilPotentiometerLessThan(1400, in1);
-			rawliftControl(0, 0);
-			wait1Msec(100);
-			rawliftControl(-63, -63); untilPotentiometerGreaterThan(1070, in1);
-			rawliftControl(0, 0);
-			//bring down mobile goal
+			tipControl(60, 60, 500);
+			BaseControlPID(30, 0, 1);
 
-			liftControl(-63, -63, 200);
-			rawliftControl(0,0);
-			wait1Msec(250);
-			//bring up mobile goal
-
-			BaseControlPID(42, 0, 0.7);
-			//drive to cone
-
-			baseControl(0, 0, 100);
-			//stop
-
-			startTask(GyroReset);
-			rawliftControl(-63, -63);untilPotentiometerGreaterThan(1800, in1);
-			rawliftControl(0, 0);
-			wait1Msec(250);
-			//bring up mobile goal, gyro
-
-		  startTask(BackStraighten);
-		  rawBaseControl(-50, -50);
-		  untilLight(2850, in2);
-		  //back up to line
-
-		  baseControl(-63, -63, 130);
-		  //back up more
-
-		  stopTask(BackStraighten);
-		  baseControl(0, 0, 100);
-		  stopTask(GyroReset);
-		  //back up, end gyro
-
-		  startTask(PivotLeft100);
-		  wait1Msec(1000);
-		  baseControl(0, 0, 250);
-		  startTask(GyroReset);
-		  //pivot to the left
-
-		  BaseControlPID(16, 0, 0.5);
-		  baseControl(0, 0, 2000);
-		  //drive forwards
-
-		  stopTask(GyroReset);
-		  startTask(PivotLeft100);
-		  wait1Msec(1000);
-		  baseControl(0, 0, 250);
-		  //pivot left
-
-		  BaseControlPID(1, 0, 1);
-			baseControl(153, 100, 25000);
-			//drive to 20 pt
-
-			// liftControl(-63, -63, 500);
-			// rawliftControl(0, 0);
-			//bring mobile goal in
-
-		//	BaseControlPID(-36, 0, 1);
-			// baseControl(0, 0, 250);
-			//back out
-
-
+			tipControl(0, 0, 100);
 		}
 	}
 
